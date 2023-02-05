@@ -9,7 +9,16 @@
     "prepare": "husky install"
   },
   "devDependencies": {
+    "@nuxtjs/color-mode": "^3.2.0",
+    "@nuxtjs/tailwindcss": "^6.3.1",
     "husky": "^8.0.3",
-    "nuxt": "^3.1.2"
+    "nuxt": "^3.1.2",
+    "nuxt-icon": "^0.2.10"
+  },
+  "dependencies": {
+    "@pinia/nuxt": "^0.4.6",
+    "pinia": "^2.0.30",
+    "vee-validate": "^3.4.14",
+    "vue": "^3.2.47"
   }
 }
