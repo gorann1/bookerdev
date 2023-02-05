@@ -1,21 +1,44 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-    modules: [
-        'nuxt-icon',
-        '@pinia/nuxt',
-        '@nuxtjs/tailwindcss',
-        '@nuxtjs/color-mode'
-    ],
-    tailwindcss: {
-        cssPath: '~/assets/css/tailwind.css',
-        configPath: 'tailwind.config.js',
-        exposeConfig: false,
-        config: {},
-        injectPosition: 0,
-        viewer: true
+    // server side rendering mode
+    ssr: true,
+
+    modules: ['nuxt-icon', '@pinia/nuxt', '@nuxtjs/color-mode', 'nuxt-windicss', '@vueuse/nuxt'],
+    // experimental features
+    experimental: {
+        reactivityTransform: false,
+    },
+    // build
+    build: {
+        transpile: ['@headlessui/vue'],
+    },
+    babel: {
+      presets(env, [ preset, options ]) {
+        return [
+          [ "@nuxt/babel-preset-app", options ]
+        ]
+      }
+    },
+    // auto import components
+    components: true,
+    // vueuse
+    vueuse: {
+        ssrHandlers: true,
+    },
+    // windicss
+    windicss: {
+        analyze: {
+            analysis: {
+                interpretUtilities: false,
+            },
+            server: {
+                port: 4000,
+                open: false,
+            },
+        },
+        scan: true,
     },
     colorMode: {
-        classSuffix: ''
-    }
-
+        classSuffix: '',
+    },
 })

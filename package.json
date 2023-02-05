@@ -2,8 +2,11 @@
   "private": true,
   "scripts": {
     "build": "nuxt build",
+    "clean": "rm -rf .nuxt dist .output",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
+    "lint": "eslint --ext \".ts,.js,.vue\" --ignore-path .eslintignore .",
+    "lintfix": "eslint --fix --ext \".ts,.js,.vue\" --ignore-path .eslintignore .",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "prepare": "husky install"
@@ -11,19 +14,30 @@
   "devDependencies": {
     "@babel/core": "^7.20.12",
     "@babel/eslint-parser": "^7.19.1",
+    "@babel/preset-env": "^7.20.2",
+    "@babel/runtime-corejs2": "^7.20.13",
     "@commitlint/cli": "^17.4.2",
+    "@commitlint/config-conventional": "^17.4.2",
+    "@headlessui/vue": "^1.7.9",
     "@nuxtjs/color-mode": "^3.2.0",
     "@nuxtjs/eslint-config": "^12.0.0",
+    "@nuxtjs/eslint-config-typescript": "^12.0.0",
     "@nuxtjs/eslint-module": "^3.1.0",
     "@nuxtjs/tailwindcss": "^6.3.1",
+    "@vueuse/core": "^9.12.0",
+    "@vueuse/nuxt": "^9.12.0",
+    "babel-preset-vue": "^2.0.2",
+    "core-js": "^2.6.12",
     "eslint": "^8.33.0",
     "eslint-config-prettier": "^8.6.0",
     "eslint-plugin-nuxt": "^4.0.0",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-vue": "^9.9.0",
     "husky": "^8.0.3",
+    "lint-staged": "^13.1.0",
     "nuxt": "^3.1.2",
     "nuxt-icon": "^0.2.10",
+    "nuxt-windicss": "^2.6.0",
     "prettier": "^2.8.3"
   },
   "dependencies": {
@@ -31,5 +45,10 @@
     "pinia": "^2.0.30",
     "vee-validate": "^3.4.14",
     "vue": "^3.2.47"
+  },
+  "lint-staged": {
+    "**/*.{js,ts,vue,html}": [
+      "pnpm lintfix"
+    ]
   }
 }
