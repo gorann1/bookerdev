@@ -1,0 +1,196 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                Int     @id @default(autoincrement())
+  logintype         String? @default("email")
+  password          String?
+  email             String?
+  name              String?
+  username          String? @unique
+  role              Role     @default(USER)
+  comments          Comment[]
+  session           Session?
+  slug              String
+  stripeCustomerId  String?
+  Subscription      Subscription[]
+  profile           Profile?
+  bookings          Booking[]
+  ratingsGiven      Ratings[]
+
+}
+
+model Booking {
+  id Int  @id @default(autoincrement())
+  user User @relation(fields: [userId], references: [id])
+  start_date DateTime
+  end_date DateTime
+  createdAt DateTime  @cretedAt
+  updatedAt DateTime  @updatedAt
+  discount_percents   Decimal @db.Decimal(5.2)
+  total_price         Decimal @db.Decimal(9,2)
+}
+
+model Profile {
+  id     Int    @id @default(autoincrement())
+  bio    String
+  user   User   @relation(fields: [userId], references: [id])
+  userId Int    @unique
+}
+
+model Review{
+  id        Int      @id @default(autoincrement())
+  content   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  published Boolean  @default(false)
+  author    User?    @relation(fields: [authorId], references: [id])
+  authorId  Int?
+}
+
+
+model Ratings {
+  id          Int     @id @default(autoincrement())
+  rating      Decimal
+  location    Location   @relation(fields: [locationId], references: [id])
+  locationId  Int
+  user        User    @relation(fields: [userId], references: [id])
+  userId      Int
+}
+
+model Session {
+  id        Int       @id @default(autoincrement())
+  authToken String    @unique
+  user      User      @relation(fields: [userId], references: [id])
+  userId    Int       @unique
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+}
+
+model Subscription {
+  id            Int     @id @default(autoincrement())
+  user          User    @relation(fields: [userId], references: [id])
+  userId        Int
+  stripeId      String  @unique
+  stripeStatus  String?
+  stripePriceId String?
+  quantity      Int?
+  trialEndsAt   Int?
+  endsAt        Int?
+  startDate     Int
+  lastEventDate Int
+}
+
+enum Role {
+  USER
+  ADMIN
+  EDITOR
+  CENTER
+}
+
+
+model Location {
+  id Int        @id @default(autoincrement())
+  name String
+  description String
+  Ratings         Ratings[]
+  type            Type @relation(fields: [typeId], references: [id])
+  category        Category @relation(fields: [categoryId], references: [id])
+  depth           Depth @relation(fields: [depthId], references: [id])
+  visibility      Visibility @relation(fields: [visibilityId], references: [id])
+
+  cities CitiesOnLocations[]
+}
+
+model Zone {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String
+  slug        String
+  countries   Country[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Country {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String
+  slug        String
+  Zone        Zone     @relation(fields: [zoneId], references: [id])
+  zoneId      Int
+  regions     Region[]
+  iso3        String
+  numcodes    Number
+  phonecode   Number
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Region {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String
+  slug        String
+  Country     Country  @relation(fields: [countryId], references: [id])
+  countryId   Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model City {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String
+  slug        String
+  Region      Region   @relation(fields: [regionId], references: [id])
+  centers     Center[]
+  locations   CitiesOnLocations[]
+}
+
+model Center {
+  id          Int @id @default(autoincrement())
+  name        String
+  description String
+  slug        String
+  ltd         Decimal @db.Decimal(10.2)
+  lng         Decimal @db.Decimal(10.2)
+  city        City @relation(fields: [cityId], references: [id])
+  cityId      Int
+}
+
+model Type {
+  id          Int @id @default(autoincrement())
+  name        String
+  description String
+  slug        String
+}
+
+model Category {
+  id Int @id @default(autoincrement())
+  name String
+  description String
+  slug String
+}
+
+model Depth {
+  id Int @id @default(autoincrement())
+  name String
+  slug String
+}
+
+model Visibility {
+  id Int @id @default(autoincrement())
+  name String
+  slug String
+}
